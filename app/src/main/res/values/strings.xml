@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Poc_map_tracking_and_gallery</string>
+
+    <string name="item_map_bottom_nav">My Map</string>
+    <string name="item_gallery_bottom_nav">My Gallery</string>
 </resources>
