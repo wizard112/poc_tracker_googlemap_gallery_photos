@@ -22,7 +22,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -30,11 +30,15 @@ dependencies {
     compile "com.android.support.constraint:constraint-layout:$rootProject.constraintLayoutVersion"
     testCompile "junit:junit:$rootProject.jUnitVersion"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-
     //bottom navigation view
     compile "com.android.support:design:$rootProject.designVersion.+"
     compile "com.android.support:support-v4:$rootProject.supportv4Version.+"
+
+    compile 'com.google.android.gms:play-services-maps:11.0.4'
+    compile 'com.google.android.gms:play-services:11.0.4'
 }
 repositories {
     mavenCentral()
 }
+
+apply plugin: 'com.google.gms.google-services'

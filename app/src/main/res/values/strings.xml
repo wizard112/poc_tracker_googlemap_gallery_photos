@@ -3,4 +3,8 @@
 
     <string name="item_map_bottom_nav">My Map</string>
     <string name="item_gallery_bottom_nav">My Gallery</string>
+
+    //configuration
+    <string name="VERSION_GOOGLE_MAPS">2</string>
+    <string name="API_KEY_GOOGLE_MAPS_V2">AIzaSyBiJkUNov7OxjG9YliwxN-RPy37eq5i4co</string>
 </resources>
