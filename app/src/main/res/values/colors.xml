@@ -6,4 +6,7 @@
 
     <color name="baseColor">#607D8B</color>
     <color name="color_item_bottom_nav">#9E9E9E</color>
+
+    <color name="color_selected_item_bottom_nav">#263238 </color>
+    <color name="color_unselected_item_bottom_nav">#9E9E9E</color>
 </resources>
