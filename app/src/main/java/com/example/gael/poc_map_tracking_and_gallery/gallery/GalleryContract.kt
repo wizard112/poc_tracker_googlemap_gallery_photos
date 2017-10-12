@@ -9,9 +9,10 @@ import com.example.gael.poc_map_tracking_and_gallery.BaseView
 interface GalleryContract {
 
     interface View : BaseView<Presenter> {
-
+        fun getImages()
     }
     interface Presenter : BasePresenter {
         fun getView() : View
+        fun getImages()
     }
 }
