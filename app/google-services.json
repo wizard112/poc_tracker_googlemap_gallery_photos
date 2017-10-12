@@ -1,0 +1,118 @@
+{
+  "project_info": {
+    "project_number": "103323467114",
+    "project_id": "adneom-1314"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:103323467114:android:cdc1d06c9bc6b47f",
+        "android_client_info": {
+          "package_name": "com.qustomer.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "103323467114-2o0jesf1fieb3hv1mhlhpt5nnnhegoni.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7ixI3jDqtHFNp1Ix0hTCaNeip9AjLhtE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:103323467114:android:6036f32aea4f16e2",
+        "android_client_info": {
+          "package_name": "adneom.poc_clustering_map"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "103323467114-8mdm46lntfnb8rnisk1d7rpepmhqcvqi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "adneom.poc_clustering_map",
+            "certificate_hash": "81b63464a96238e2fce364b96d6aac92f619c190"
+          }
+        },
+        {
+          "client_id": "103323467114-2o0jesf1fieb3hv1mhlhpt5nnnhegoni.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7ixI3jDqtHFNp1Ix0hTCaNeip9AjLhtE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:103323467114:android:8da8ed0b66633f4e",
+        "android_client_info": {
+          "package_name": "com.example.gael.poc_map_tracking_and_gallery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "103323467114-79sh6hmpl2lc0em6klo33kdgl8jtof0d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gael.poc_map_tracking_and_gallery",
+            "certificate_hash": "efe3c1e7e7b1599c89a40ac260d8ef7bacafa845"
+          }
+        },
+        {
+          "client_id": "103323467114-2o0jesf1fieb3hv1mhlhpt5nnnhegoni.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7ixI3jDqtHFNp1Ix0hTCaNeip9AjLhtE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
