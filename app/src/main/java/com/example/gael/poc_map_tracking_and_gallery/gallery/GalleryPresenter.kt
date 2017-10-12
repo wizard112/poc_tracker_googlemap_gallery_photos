@@ -18,4 +18,9 @@ class GalleryPresenter (view : GalleryContract.View): GalleryContract.Presenter 
         return mView
     }
 
+    override fun getImages() {
+        if(isViewNotNull()){
+            mView.getImages()
+        }
+    }
 }
