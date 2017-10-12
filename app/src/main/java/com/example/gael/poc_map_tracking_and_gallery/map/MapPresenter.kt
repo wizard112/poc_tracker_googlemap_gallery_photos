@@ -23,4 +23,14 @@ class MapPresenter (v : MapContract.View) : MapContract.Presenter {
     override fun isViewNotNull(): Boolean {
         return mView != null
     }
+
+    override fun getView(): MapContract.View {
+        return mView
+    }
+
+    override fun checkPermissionsLocation() {
+        if(isViewNotNull()) {
+            mView.checkPermissionsLocation()
+        }
+    }
 }
