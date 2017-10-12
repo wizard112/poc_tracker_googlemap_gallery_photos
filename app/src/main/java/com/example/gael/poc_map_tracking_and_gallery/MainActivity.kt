@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     companion object {
         val REQUEST_LOCATION_MAP = 896
         val REQUEST_LOCATION_LOCATION = 897
+        val REQUEST_PERMISSION_EXTERNAL_STORAGE = 898
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,7 +75,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             }
             R.id.item_map -> {
                 if (presenterMap != null) {
-                    fragment = presenterMap!!.getView() as GalleryFragment
+                    fragment = presenterMap!!.getView() as MapFragment
                 }else{
                     fragment = MapFragment.newInstance()
                     initializePresenterMap(fragment)
@@ -95,6 +96,11 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             REQUEST_LOCATION_LOCATION -> if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 if(presenterMap != null){
                     presenterMap!!.checkPermissionsLocation()
+                }
+            }
+            REQUEST_PERMISSION_EXTERNAL_STORAGE -> if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if(presenterGallery != null){
+                    presenterGallery!!.getImages()
                 }
             }
         }
