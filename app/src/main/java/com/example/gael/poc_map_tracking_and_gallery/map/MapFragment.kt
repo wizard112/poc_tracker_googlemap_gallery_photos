@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.gael.poc_map_tracking_and_gallery.MainActivity
 import com.example.gael.poc_map_tracking_and_gallery.R
+import com.example.gael.poc_map_tracking_and_gallery.Utils.MapUtils
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationServices
@@ -126,6 +127,13 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
         mGoogleApiClient.connect()
     }
 
+    override fun onStop() {
+        super.onStop()
+        if( mGoogleApiClient != null && mGoogleApiClient.isConnected ) {
+            mGoogleApiClient.disconnect()
+        }
+    }
+
     override fun onConnected(p0: Bundle?) {
     }
 
@@ -145,11 +153,14 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
 
     }
 
-    override fun onMapClick(p0: LatLng?) {
-
+    //add a marker
+    override fun onMapClick(latLng: LatLng?) {
     }
 
-    override fun onMarkerClick(p0: Marker?): Boolean {
+    //show marker window
+    override fun onMarkerClick(marker: Marker?): Boolean {
+        //val resp = MapUtils.getAddressFromLatLng(marker!!.position, activity)
+        marker!!.showInfoWindow()
         return true
     }
 }
