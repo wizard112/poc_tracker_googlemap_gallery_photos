@@ -52,7 +52,7 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
     var myLastUpdate : String = ""
 
     companion object {
-        fun newIntent() : MapFragment { return MapFragment()
+        fun newInstance() : MapFragment { return MapFragment()
         }
     }
 
@@ -126,7 +126,7 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
     override fun checkPermissionsMap() {
         if(ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION), MainActivity.REQUEST_LOCATION)
+            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION), MainActivity.REQUEST_LOCATION_MAP)
         } else {
             initListeners()
 
@@ -143,6 +143,15 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
             // For zooming automatically to the location of the marker
             val cameraPosition = CameraPosition.Builder().target(bxl).zoom(valueZoom).build()
             myGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        }
+    }
+
+    override fun checkPermissionsLocation() {
+        if(ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION), MainActivity.REQUEST_LOCATION_LOCATION)
+        } else {
+            var pendingResult : PendingResult<Status> = LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,locationRequest,this)
         }
     }
 
@@ -193,7 +202,8 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
      * @PendingResult is a pending result from API in Google Play services. The result is retrieved via a callback in my Fragment
      */
     private fun startLocationUpdates () {
-        var pendingResult : PendingResult<Status> = LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,locationRequest,this)
+        //var pendingResult : PendingResult<Status> = LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,locationRequest,this)
+        checkPermissionsLocation()
     }
 
     private fun addMarker() {
@@ -219,7 +229,9 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
     }
 
     private fun stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this)
+        if(mGoogleApiClient != null && mGoogleApiClient.isConnected){
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this)
+        }
     }
 
     override fun onLocationChanged(currentLocation: Location?) {
