@@ -6,4 +6,5 @@ package com.example.gael.poc_map_tracking_and_gallery
 
 interface BasePresenter{
 
+    fun isViewNotNull() : Boolean
 }
