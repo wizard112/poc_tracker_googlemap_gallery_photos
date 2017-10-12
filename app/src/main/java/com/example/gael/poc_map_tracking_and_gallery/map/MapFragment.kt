@@ -2,6 +2,7 @@ package com.example.gael.poc_map_tracking_and_gallery.map
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
@@ -14,17 +15,18 @@ import com.example.gael.poc_map_tracking_and_gallery.R
 import com.example.gael.poc_map_tracking_and_gallery.Utils.MapUtils
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.common.api.PendingResult
+import com.google.android.gms.common.api.Status
+import com.google.android.gms.location.LocationListener
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.android.synthetic.main.fragment_map.view.*
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.MarkerOptions
-
-
-
+import com.google.maps.android.ui.IconGenerator
+import java.text.DateFormat
+import java.util.*
 
 
 /**
@@ -35,13 +37,22 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
         GoogleMap.OnInfoWindowClickListener,
         GoogleMap.OnMapLongClickListener,
         GoogleMap.OnMapClickListener,
-        GoogleMap.OnMarkerClickListener {
+        GoogleMap.OnMarkerClickListener,
+        LocationListener{
 
     lateinit var mPresenter : MapContract.Presenter
     lateinit var mMapView : MapView
     lateinit var myGoogleMap: GoogleMap
-    val REQUEST_LOCATION = 896
+    val TAG = "MapFRagment"
     lateinit var mGoogleApiClient : GoogleApiClient
+    //to make a quality request to FusedLOcationProviderApi
+    lateinit var locationRequest : LocationRequest
+    var valueZoom : Float = 12f
+
+    var interval : Long = 0
+    var fastInterval : Long = 0
+    var myCurrentLOcation : Location? = null
+    var myLastUpdate : String = ""
 
     companion object {
         fun newIntent() : MapFragment { return MapFragment()
@@ -52,6 +63,11 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
         mPresenter = presenter
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        fastInterval = 1000 * 15
+        interval = 1000 * 30
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var v : View =  inflater!!.inflate(R.layout.fragment_map,container,false)
@@ -67,6 +83,7 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        createLOcationRequest()
         mGoogleApiClient = GoogleApiClient.Builder(activity)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -82,6 +99,9 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
     }
 
 
+    /**
+     * initilize the listenrs
+     */
     private fun initListeners() {
         myGoogleMap.setOnMarkerClickListener(this)
         myGoogleMap.setOnMapLongClickListener(this)
@@ -89,6 +109,23 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
         myGoogleMap.setOnMapClickListener(this)
     }
 
+    /**
+     * Create a request of quality
+     * set interval for location updates in milisecondes
+     * set fastest interval
+     * set the priority of the request
+     */
+    private fun createLOcationRequest() {
+        locationRequest = LocationRequest()
+        locationRequest.setInterval(interval)
+        locationRequest.fastestInterval = fastInterval
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+    }
+
+    /**
+     * Check if the user has activated the permissiosn for the location
+     * initialize the map with marker, zoom and options/settings
+     */
     override fun checkPermissionsMap() {
         if(ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -107,14 +144,21 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
 
 
             // For zooming automatically to the location of the marker
-            val cameraPosition = CameraPosition.Builder().target(bxl).zoom(12f).build()
+            val cameraPosition = CameraPosition.Builder().target(bxl).zoom(valueZoom).build()
             myGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
         }
     }
 
+    /**
+     * call the map view on resume
+     * if the applications was in pause, we re launch the location update
+     */
     override fun onResume() {
         mMapView.onResume()
         super.onResume()
+        if(mGoogleApiClient.isConnected){
+            startLocationUpdates()
+        }
     }
 
     override fun onDestroy() {
@@ -122,11 +166,17 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
         super.onDestroy()
     }
 
+    /**
+     * Connect the google api client
+     */
     override fun onStart() {
         super.onStart()
         mGoogleApiClient.connect()
     }
 
+    /**
+     * disconnect the google api client
+     */
     override fun onStop() {
         super.onStop()
         if( mGoogleApiClient != null && mGoogleApiClient.isConnected ) {
@@ -134,7 +184,58 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
         }
     }
 
+    /**
+     * Stop the location updates
+     */
+    override fun onPause() {
+        super.onPause()
+        stopLocationUpdates()
+    }
+
+    /**
+     * @PendingResult is a pending result from API in Google Play services. The result is retrieved via a callback in my Fragment
+     */
+    private fun startLocationUpdates () {
+        var pendingResult : PendingResult<Status> = LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,locationRequest,this)
+    }
+
+    private fun addMarker() {
+        valueZoom = 13f
+        var options : MarkerOptions = MarkerOptions()
+
+        // following four lines requires 'Google Maps Android API Utility Library'
+        // https://developers.google.com/maps/documentation/android/utility/
+        // I have used this to display the time as title for location markers
+        // you can safely comment the following four lines but for this info
+        var iconFactory : IconGenerator = IconGenerator(activity)
+        iconFactory.setStyle(IconGenerator.STYLE_PURPLE);
+        options.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(myLastUpdate)))
+        options.anchor(iconFactory.anchorU, iconFactory.anchorV)
+
+        var currentLatLng : LatLng = LatLng(myCurrentLOcation!!.latitude, myCurrentLOcation!!.longitude)
+        options.position(currentLatLng)
+        var mapMarker : Marker = myGoogleMap.addMarker(options)
+        var atTime : Long = myCurrentLOcation!!.time
+        myLastUpdate = DateFormat.getTimeInstance().format(Date(atTime))
+        mapMarker.setTitle(myLastUpdate)
+        myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, valueZoom))
+    }
+
+    private fun stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this)
+    }
+
+    override fun onLocationChanged(currentLocation: Location?) {
+        myCurrentLOcation = currentLocation
+        myLastUpdate = DateFormat.getTimeInstance().format(Date())
+        addMarker()
+    }
+
+    /**
+     * start the location updates
+     */
     override fun onConnected(p0: Bundle?) {
+        startLocationUpdates()
     }
 
     override fun onConnectionSuspended(p0: Int) {
