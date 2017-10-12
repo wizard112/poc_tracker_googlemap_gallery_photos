@@ -36,6 +36,9 @@ dependencies {
 
     compile 'com.google.android.gms:play-services-maps:11.0.4'
     compile 'com.google.android.gms:play-services:11.0.4'
+
+    //GOOGLE MAP API Util lib
+    compile 'com.google.maps.android:android-maps-utils:0.5+'
 }
 repositories {
     mavenCentral()
