@@ -10,9 +10,12 @@ import com.example.gael.poc_map_tracking_and_gallery.BaseView
 
     interface View : BaseView<Presenter> {
         fun checkPermissionsMap()
+        fun checkPermissionsLocation()
     }
 
     interface Presenter : BasePresenter{
         fun checkPermissionsMap()
+        fun checkPermissionsLocation()
+        fun getView() : View
     }
 }
