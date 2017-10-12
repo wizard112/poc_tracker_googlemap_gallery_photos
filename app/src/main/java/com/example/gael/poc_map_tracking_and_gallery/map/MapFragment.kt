@@ -6,13 +6,11 @@ import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.gael.poc_map_tracking_and_gallery.MainActivity
 import com.example.gael.poc_map_tracking_and_gallery.R
-import com.example.gael.poc_map_tracking_and_gallery.Utils.MapUtils
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.PendingResult
@@ -22,7 +20,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
-import kotlinx.android.synthetic.main.fragment_map.*
 import kotlinx.android.synthetic.main.fragment_map.view.*
 import com.google.maps.android.ui.IconGenerator
 import java.text.DateFormat
@@ -51,7 +48,7 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
 
     var interval : Long = 0
     var fastInterval : Long = 0
-    var myCurrentLOcation : Location? = null
+    var myCurrentLocation: Location? = null
     var myLastUpdate : String = ""
 
     companion object {
@@ -83,7 +80,7 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        createLOcationRequest()
+        createLocationRequest()
         mGoogleApiClient = GoogleApiClient.Builder(activity)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -115,7 +112,7 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
      * set fastest interval
      * set the priority of the request
      */
-    private fun createLOcationRequest() {
+    private fun createLocationRequest() {
         locationRequest = LocationRequest()
         locationRequest.setInterval(interval)
         locationRequest.fastestInterval = fastInterval
@@ -212,10 +209,10 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
         options.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(myLastUpdate)))
         options.anchor(iconFactory.anchorU, iconFactory.anchorV)
 
-        var currentLatLng : LatLng = LatLng(myCurrentLOcation!!.latitude, myCurrentLOcation!!.longitude)
+        var currentLatLng : LatLng = LatLng(myCurrentLocation!!.latitude, myCurrentLocation!!.longitude)
         options.position(currentLatLng)
         var mapMarker : Marker = myGoogleMap.addMarker(options)
-        var atTime : Long = myCurrentLOcation!!.time
+        var atTime : Long = myCurrentLocation!!.time
         myLastUpdate = DateFormat.getTimeInstance().format(Date(atTime))
         mapMarker.setTitle(myLastUpdate)
         myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, valueZoom))
@@ -226,7 +223,7 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
     }
 
     override fun onLocationChanged(currentLocation: Location?) {
-        myCurrentLOcation = currentLocation
+        myCurrentLocation = currentLocation
         myLastUpdate = DateFormat.getTimeInstance().format(Date())
         addMarker()
     }
