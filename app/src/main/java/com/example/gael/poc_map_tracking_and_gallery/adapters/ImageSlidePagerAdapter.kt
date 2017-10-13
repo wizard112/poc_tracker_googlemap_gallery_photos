@@ -31,7 +31,7 @@ class ImageSlidePagerAdapter(fm : FragmentManager, cxt : Context,list : ArrayLis
     }
 
     private fun test() {
-        images.forEach { image: Image -> Log.i("Test"," : ".plus(image.toString())) }
+        //images.forEach { image: Image -> Log.i("Test"," : ".plus(image.toString())) }
         val newList = images.sortedWith(compareBy { it -> it.idIMage == firstToDisplay })
         newList.forEach { image: Image ->  Log.i("Test",image.toString())}
     }
