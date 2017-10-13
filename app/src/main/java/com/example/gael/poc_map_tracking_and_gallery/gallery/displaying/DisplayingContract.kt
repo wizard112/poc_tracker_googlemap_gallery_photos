@@ -9,6 +9,11 @@ import com.example.gael.poc_map_tracking_and_gallery.BaseView
 
 interface DisplayingContract {
 
-    interface View : BaseView<Presenter> {}
-    interface Presenter: BasePresenter{}
+    interface View : BaseView<Presenter> {
+        fun displayDowload()
+    }
+
+    interface Presenter: BasePresenter{
+        fun downloadFile(name : String)
+    }
 }

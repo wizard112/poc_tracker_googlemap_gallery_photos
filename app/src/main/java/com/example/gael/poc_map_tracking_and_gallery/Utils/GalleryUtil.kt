@@ -2,9 +2,11 @@ package com.example.gael.poc_map_tracking_and_gallery.Utils
 
 import android.content.Context
 import android.database.Cursor
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
+import com.example.gael.poc_map_tracking_and_gallery.R
 import com.example.gael.poc_map_tracking_and_gallery.models.Image
 import kotlin.collections.ArrayList
 
@@ -45,9 +47,58 @@ class GalleryUtil {
                 if(number < 6) {
                     images.add(Image(name,bucketName,number++))
                 }
-                //images.add(Image(name,bucketName,number++))
             }
             return images
+        }
+
+        /**
+         * Create a list of drawable
+         */
+        fun createLIstImageDrawable() : ArrayList<Image> {
+            var l : ArrayList<Image> = ArrayList()
+            var i : Int = 1
+            while(i < 201){
+                var image : Image = Image()
+                when{
+                    i%3 == 0 -> {
+                        image.type = "camera"
+                        image.uriImage = "a"
+                        image.idIMage = i
+                    }
+                    i%3 == 1 -> {
+                        image.type = "social"
+                        image.uriImage = "m"
+                        image.idIMage = i
+                    }
+                    i%3 == 2 -> {
+                        image.type = "holiday"
+                        image.uriImage = "s"
+                        image.idIMage = i
+                    }
+                }
+                l.add(image)
+                i++
+            }
+            return l
+        }
+
+        /**
+         * Give the good image
+         */
+        fun choiceGoodImage(image : Image) : Int {
+            var d : Int? = null
+            when(image.uriImage){
+                "a" -> {
+                    d = R.drawable.allrigth
+                }
+                "m" -> {
+                    d = R.drawable.mon
+                }
+                "s" -> {
+                    d = R.drawable.see
+                }
+            }
+            return d!!
         }
 
     }

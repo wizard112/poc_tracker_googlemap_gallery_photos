@@ -1,6 +1,7 @@
 package com.example.gael.poc_map_tracking_and_gallery.gallery
 
 import android.Manifest
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridView
+import com.example.gael.poc_map_tracking_and_gallery.Interfaces.IBottomNavigationActivity
 import com.example.gael.poc_map_tracking_and_gallery.Interfaces.IGridGallery
 import com.example.gael.poc_map_tracking_and_gallery.MainActivity
 import com.example.gael.poc_map_tracking_and_gallery.R
@@ -18,6 +20,7 @@ import com.example.gael.poc_map_tracking_and_gallery.adapters.ImageAdapter
 import com.example.gael.poc_map_tracking_and_gallery.gallery.displaying.DisplayingActivity
 import com.example.gael.poc_map_tracking_and_gallery.models.Image
 import kotlinx.android.synthetic.main.fragment_gallery.*
+import java.io.IOException
 
 /**
  * Created on 12.10.17.
@@ -31,6 +34,7 @@ class GalleryFragment : Fragment(), GalleryContract.View, IGridGallery {
 
     lateinit var gridView : GridView
     lateinit var adapter : ImageAdapter
+    var iComm : IBottomNavigationActivity? = null
 
     companion object {
         fun newINstance() : GalleryFragment{
@@ -65,7 +69,8 @@ class GalleryFragment : Fragment(), GalleryContract.View, IGridGallery {
      * Images list from Gallery utils
      */
     override fun getImages() {
-        images = GalleryUtil.getAllImages(activity)
+        //images = GalleryUtil.getAllImages(activity)
+        images = GalleryUtil.createLIstImageDrawable()
         initializeView()
     }
 
@@ -83,7 +88,8 @@ class GalleryFragment : Fragment(), GalleryContract.View, IGridGallery {
      * redirect to displaying activity
      */
     override fun goToDisplayingView(position: Int) {
-        activity.startActivity(DisplayingActivity.newIntent(activity, images!!,position))
+        //activity.startActivity(DisplayingActivity.newIntent(activity, images!!,position))
+        iComm!!.replaceFragment(images!!,position)
     }
 
     /**
@@ -91,5 +97,15 @@ class GalleryFragment : Fragment(), GalleryContract.View, IGridGallery {
      */
     override fun redirectTo(position: Int) {
         presenterGallery.goToDisplayingView(position)
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        try{
+            iComm = context as IBottomNavigationActivity
+        }catch (ioe: IOException) {
+            ioe.printStackTrace()
+            Log.i("Test",ioe.message)
+        }
     }
 }

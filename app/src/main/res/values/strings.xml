@@ -7,4 +7,6 @@
     //configuration
     <string name="VERSION_GOOGLE_MAPS">2</string>
     <string name="API_KEY_GOOGLE_MAPS_V2">AIzaSyBiJkUNov7OxjG9YliwxN-RPy37eq5i4co</string>
+
+    <string name="text_download">Your file is download ! </string>
 </resources>

@@ -36,7 +36,6 @@ class Utils {
         }
 
         fun getFRagmentFromManager(cxt : AppCompatActivity, idView: Int) : Fragment {
-            Log.i("Test",""+(cxt == null))
             return cxt.supportFragmentManager.findFragmentById(idView)
         }
 
