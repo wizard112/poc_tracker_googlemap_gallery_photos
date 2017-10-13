@@ -33,7 +33,6 @@ class ImageAdapter (cxt : Context, list : ArrayList<Image>, iCommubication : IGr
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var myView : View = LayoutInflater.from(context).inflate(R.layout.layout_grid_view_cell,parent,false)
         myView.image.setImageURI(Uri.parse(images[position].uriImage))
-        //myView.image.setImageBitmap(BitmapFactory.decodeFile(images[position].uriImage))
         return myView
     }
 
@@ -50,6 +49,7 @@ class ImageAdapter (cxt : Context, list : ArrayList<Image>, iCommubication : IGr
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        communication.redirectTo(position)
+        var trueNumber = position
+        communication.redirectTo(++trueNumber)
     }
 }
