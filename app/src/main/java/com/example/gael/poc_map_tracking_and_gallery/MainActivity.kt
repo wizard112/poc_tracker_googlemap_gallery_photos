@@ -6,14 +6,17 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.view.MenuItem
+import com.example.gael.poc_map_tracking_and_gallery.Interfaces.IBottomNavigationActivity
 import com.example.gael.poc_map_tracking_and_gallery.gallery.GalleryFragment
 import com.example.gael.poc_map_tracking_and_gallery.gallery.GalleryPresenter
+import com.example.gael.poc_map_tracking_and_gallery.gallery.displaying.TestDisplayingFragment
 import com.example.gael.poc_map_tracking_and_gallery.map.MapFragment
 import com.example.gael.poc_map_tracking_and_gallery.map.MapPresenter
+import com.example.gael.poc_map_tracking_and_gallery.models.Image
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_bottom_view.*
 
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener{
+class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, IBottomNavigationActivity {
 
     var bottomNavigation : BottomNavigationView? = null
 
@@ -24,6 +27,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         val REQUEST_LOCATION_MAP = 896
         val REQUEST_LOCATION_LOCATION = 897
         val REQUEST_PERMISSION_EXTERNAL_STORAGE = 898
+
+        val TAG_FRG_PREVIEW = "tag_frg_preview"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,5 +109,16 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 }
             }
         }
+    }
+
+    override fun replaceFragment(list: ArrayList<Image>, selectedImage: Int) {
+        var f = supportFragmentManager.findFragmentByTag(TAG_FRG_PREVIEW)
+        if( f is TestDisplayingFragment) {
+            supportFragmentManager.beginTransaction().replace(R.id.container,f, TAG_FRG_PREVIEW).commit()
+        }else{
+            f = TestDisplayingFragment.newInstance(list,selectedImage)
+            supportFragmentManager.beginTransaction().add(R.id.container,f, TAG_FRG_PREVIEW).commit()
+        }
+
     }
 }

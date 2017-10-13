@@ -2,8 +2,8 @@ package com.example.gael.poc_map_tracking_and_gallery.gallery.displaying
 
 import android.content.Context
 import android.content.Intent
+import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
 import android.support.v4.view.ViewPager
 import com.example.gael.poc_map_tracking_and_gallery.BaseActivity
 
@@ -11,9 +11,8 @@ import com.example.gael.poc_map_tracking_and_gallery.R
 import com.example.gael.poc_map_tracking_and_gallery.adapters.ImageSlidePagerAdapter
 import com.example.gael.poc_map_tracking_and_gallery.models.Image
 import kotlinx.android.synthetic.main.activity_displaying.*
-import kotlinx.android.synthetic.main.layout_bottom_view.*
 
-class DisplayingActivity : BaseActivity() {
+class DisplayingActivity : AppCompatActivity() {
 
     var images : ArrayList<Image>? = null
     var firstImage : Int? = null
@@ -45,9 +44,6 @@ class DisplayingActivity : BaseActivity() {
         view_pager = viewPager
         myAdapter = ImageSlidePagerAdapter(supportFragmentManager,this,images!!,firstImage!!)
         view_pager!!.adapter = myAdapter
-
-        bottomNavigation = bottom_nav
-        (bottomNavigation as BottomNavigationView).setOnNavigationItemSelectedListener(this)
     }
 
     private fun getIntent(intent : Intent) {

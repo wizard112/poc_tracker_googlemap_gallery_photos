@@ -3,6 +3,7 @@ package com.example.gael.poc_map_tracking_and_gallery
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.MenuItem
 import com.example.gael.poc_map_tracking_and_gallery.gallery.GalleryFragment
 import com.example.gael.poc_map_tracking_and_gallery.gallery.GalleryPresenter
