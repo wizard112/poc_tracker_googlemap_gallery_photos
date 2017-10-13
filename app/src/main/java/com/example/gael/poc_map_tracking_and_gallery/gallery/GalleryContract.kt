@@ -10,9 +10,11 @@ interface GalleryContract {
 
     interface View : BaseView<Presenter> {
         fun getImages()
+        fun goToDisplayingView(pos: Int)
     }
     interface Presenter : BasePresenter {
         fun getView() : View
         fun getImages()
+        fun goToDisplayingView(pos : Int)
     }
 }

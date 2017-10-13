@@ -9,11 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridView
+import com.example.gael.poc_map_tracking_and_gallery.Interfaces.IGridGallery
 import com.example.gael.poc_map_tracking_and_gallery.MainActivity
 import com.example.gael.poc_map_tracking_and_gallery.R
 import com.example.gael.poc_map_tracking_and_gallery.Utils.GalleryUtil
 import com.example.gael.poc_map_tracking_and_gallery.Utils.Utils
 import com.example.gael.poc_map_tracking_and_gallery.adapters.ImageAdapter
+import com.example.gael.poc_map_tracking_and_gallery.gallery.displaying.DisplayingActivity
 import com.example.gael.poc_map_tracking_and_gallery.models.Image
 import kotlinx.android.synthetic.main.fragment_gallery.*
 
@@ -21,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_gallery.*
  * Created on 12.10.17.
  */
 
-class GalleryFragment : Fragment(), GalleryContract.View {
+class GalleryFragment : Fragment(), GalleryContract.View, IGridGallery {
 
     lateinit var presenterGallery : GalleryContract.Presenter
 
@@ -59,15 +61,35 @@ class GalleryFragment : Fragment(), GalleryContract.View {
         }
     }
 
+    /**
+     * Images list from Gallery utils
+     */
     override fun getImages() {
         images = GalleryUtil.getAllImages(activity)
         initializeView()
     }
 
+    /**
+     * Initialize the grid view with adapter and click event
+     */
     private fun initializeView(){
         gridView = grid_view
-        adapter = ImageAdapter(activity,images!!)
+        adapter = ImageAdapter(activity,images!!,this)
         gridView.adapter = adapter
         gridView.onItemClickListener = adapter
+    }
+
+    /**
+     * redirect to displaying activity
+     */
+    override fun goToDisplayingView(position: Int) {
+        activity.startActivity(DisplayingActivity.newIntent(activity, images!!,position))
+    }
+
+    /**
+     * Preent knows the function to execute
+     */
+    override fun redirectTo(position: Int) {
+        presenterGallery.goToDisplayingView(position)
     }
 }
