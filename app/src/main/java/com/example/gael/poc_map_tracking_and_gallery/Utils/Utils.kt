@@ -1,8 +1,11 @@
 package com.example.gael.poc_map_tracking_and_gallery.Utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 
 /**
@@ -30,6 +33,15 @@ class Utils {
                 }
             }
             return res;
+        }
+
+        fun getFRagmentFromManager(cxt : AppCompatActivity, idView: Int) : Fragment {
+            Log.i("Test",""+(cxt == null))
+            return cxt.supportFragmentManager.findFragmentById(idView)
+        }
+
+        fun addFragmentFromManager(cxt : AppCompatActivity, idContainer : Int, frg : Fragment) {
+            cxt.supportFragmentManager.beginTransaction().add(idContainer,frg,"").commit()
         }
     }
 }

@@ -23,4 +23,10 @@ class GalleryPresenter (view : GalleryContract.View): GalleryContract.Presenter 
             mView.getImages()
         }
     }
+
+    override fun goToDisplayingView(pos : Int) {
+        if(isViewNotNull()) {
+            mView.goToDisplayingView(pos)
+        }
+    }
 }

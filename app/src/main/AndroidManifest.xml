@@ -24,6 +24,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".gallery.displaying.DisplayingActivity">
+
+        </activity>
+
         <meta-data android:name="com.google.gms.version"
             android:value="@string/VERSION_GOOGLE_MAPS" />
 
