@@ -4,13 +4,8 @@ import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import android.support.v4.view.PagerAdapter
-import android.util.Log
-import android.view.View
-import android.view.ViewGroup
 import com.example.gael.poc_map_tracking_and_gallery.gallery.displaying.DisplayingFragment
 import com.example.gael.poc_map_tracking_and_gallery.gallery.displaying.DisplayingPresenter
-import com.example.gael.poc_map_tracking_and_gallery.models.CompareImage
 import com.example.gael.poc_map_tracking_and_gallery.models.Image
 
 /**
@@ -27,16 +22,21 @@ class ImageSlidePagerAdapter(fm : FragmentManager, cxt : Context,list : ArrayLis
         contexte = cxt
         images = list
         firstToDisplay = selectedImage
-        test()
+        startWitSelectedImage()
         createFragments()
     }
 
-    private fun test() {
+    /**
+     * Sort list to begin with selected image
+     */
+    private fun startWitSelectedImage() {
         images = ArrayList<Image>(images.sortedWith(compareBy { it -> it.idIMage != firstToDisplay }))
-        //val newList = images.sortedWith(CompareImage).forEach { image: Image ->  Log.i("Test",image.toString())}
     }
 
 
+    /**
+     * create the list of fragments in view pager
+     */
     private fun createFragments() {
         images.forEach { image: Image ->
             var preview : DisplayingFragment = DisplayingFragment.newInstance(image)
