@@ -48,7 +48,6 @@ class DisplayingFragment : Fragment(), DisplayingContract.View {
     private fun getArguments(arg : Bundle) {
         if(arg.containsKey(KEY_IMAGE)){
             image = arg.getParcelable(KEY_IMAGE)
-            Log.i("Test","image is ".plus(image.toString()))
         }
     }
 

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.gael.poc_map_tracking_and_gallery.gallery.displaying.DisplayingFragment
 import com.example.gael.poc_map_tracking_and_gallery.gallery.displaying.DisplayingPresenter
+import com.example.gael.poc_map_tracking_and_gallery.models.CompareImage
 import com.example.gael.poc_map_tracking_and_gallery.models.Image
 
 /**
@@ -31,9 +32,8 @@ class ImageSlidePagerAdapter(fm : FragmentManager, cxt : Context,list : ArrayLis
     }
 
     private fun test() {
-        //images.forEach { image: Image -> Log.i("Test"," : ".plus(image.toString())) }
-        val newList = images.sortedWith(compareBy { it -> it.idIMage == firstToDisplay })
-        newList.forEach { image: Image ->  Log.i("Test",image.toString())}
+        images = ArrayList<Image>(images.sortedWith(compareBy { it -> it.idIMage != firstToDisplay }))
+        //val newList = images.sortedWith(CompareImage).forEach { image: Image ->  Log.i("Test",image.toString())}
     }
 
 
