@@ -65,7 +65,8 @@ class GalleryFragment : Fragment(), GalleryContract.View, IGridGallery {
      * Images list from Gallery utils
      */
     override fun getImages() {
-        images = GalleryUtil.getAllImages(activity)
+        //images = GalleryUtil.getAllImages(activity)
+        images = GalleryUtil.createLIstImageDrawable()
         initializeView()
     }
 

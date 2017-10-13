@@ -3,11 +3,12 @@ package com.example.gael.poc_map_tracking_and_gallery.gallery.displaying
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.gael.poc_map_tracking_and_gallery.R
+import com.example.gael.poc_map_tracking_and_gallery.Utils.GalleryUtil
 import com.example.gael.poc_map_tracking_and_gallery.models.Image
 import kotlinx.android.synthetic.main.fragment_displaying.*
 
@@ -15,7 +16,7 @@ import kotlinx.android.synthetic.main.fragment_displaying.*
  * Created on 12.10.17.
  */
 
-class DisplayingFragment : Fragment(), DisplayingContract.View {
+class DisplayingFragment : Fragment(), DisplayingContract.View, View.OnClickListener {
 
     private var presenter : DisplayingContract.Presenter? = null
     private var image : Image? = null
@@ -59,7 +60,24 @@ class DisplayingFragment : Fragment(), DisplayingContract.View {
         super.onViewCreated(view, savedInstanceState)
 
         title_image.text = image!!.type
-        preview.setImageURI(Uri.parse(image!!.uriImage))
+        //preview.setImageURI(Uri.parse(image!!.uriImage))
+        preview.setImageResource(GalleryUtil.choiceGoodImage(image!!))
+        download.setOnClickListener(this)
+    }
+
+    override fun onClick(v: View?) {
+        when(v!!.id) {
+            R.id.download -> {
+                presenter!!.downloadFile(image.toString())
+            }
+        }
+    }
+
+    /**
+     * display toast to indicate that the file is downloaded
+     */
+    override fun displayDowload() {
+        Toast.makeText(activity,R.string.text_download,Toast.LENGTH_SHORT).show()
     }
 
 }

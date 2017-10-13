@@ -11,6 +11,7 @@ import com.example.gael.poc_map_tracking_and_gallery.gallery.GalleryPresenter
 import com.example.gael.poc_map_tracking_and_gallery.map.MapFragment
 import com.example.gael.poc_map_tracking_and_gallery.map.MapPresenter
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_bottom_view.*
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener{
 
@@ -37,7 +38,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             supportFragmentManager.beginTransaction().add(R.id.container,fragment,"").commit()
         }
 
-        //presenterMap = MapPresenter(fragment)
         initializePresenterMap(fragment)
 
         (bottomNavigation as BottomNavigationView).setOnNavigationItemSelectedListener(this)

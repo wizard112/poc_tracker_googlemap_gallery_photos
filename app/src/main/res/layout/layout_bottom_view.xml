@@ -6,11 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.example.gael.poc_map_tracking_and_gallery.MainActivity">
 
-    <FrameLayout
-        android:id="@+id/container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-    <!--
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
@@ -21,7 +16,5 @@
         app:itemTextColor="@color/menu_item_colors"
         app:menu="@menu/menu_bottom_navigation"
         />
-    -->
-    <include layout="@layout/layout_bottom_view" />
 
 </RelativeLayout>

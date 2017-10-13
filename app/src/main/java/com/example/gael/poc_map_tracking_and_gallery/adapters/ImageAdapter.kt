@@ -11,6 +11,7 @@ import android.widget.AdapterView
 import android.widget.BaseAdapter
 import com.example.gael.poc_map_tracking_and_gallery.Interfaces.IGridGallery
 import com.example.gael.poc_map_tracking_and_gallery.R
+import com.example.gael.poc_map_tracking_and_gallery.Utils.GalleryUtil
 import com.example.gael.poc_map_tracking_and_gallery.models.Image
 import kotlinx.android.synthetic.main.layout_grid_view_cell.view.*
 
@@ -32,7 +33,8 @@ class ImageAdapter (cxt : Context, list : ArrayList<Image>, iCommubication : IGr
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         var myView : View = LayoutInflater.from(context).inflate(R.layout.layout_grid_view_cell,parent,false)
-        myView.image.setImageURI(Uri.parse(images[position].uriImage))
+        //myView.image.setImageURI(Uri.parse(images[position].uriImage))
+        myView.image.setImageResource(GalleryUtil.choiceGoodImage(images[position]))
         return myView
     }
 
