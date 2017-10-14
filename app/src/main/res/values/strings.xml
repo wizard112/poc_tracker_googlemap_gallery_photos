@@ -9,4 +9,12 @@
     <string name="API_KEY_GOOGLE_MAPS_V2">AIzaSyBiJkUNov7OxjG9YliwxN-RPy37eq5i4co</string>
 
     <string name="text_download">Your file is download ! </string>
+    <string name="new_destination">New destination</string>
+
+    <string name="current_location">My current destination</string>
+
+    <string name="txt_confirmer">Confirmer</string>
+    <string name="txt_annuler">Annuler</string>
+
+    <string name="error_new_destination">Remplir la destination</string>
 </resources>
