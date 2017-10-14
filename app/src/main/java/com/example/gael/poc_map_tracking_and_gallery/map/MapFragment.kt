@@ -1,16 +1,26 @@
 package com.example.gael.poc_map_tracking_and_gallery.map
 
 import android.Manifest
+import android.app.Dialog
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
+import com.example.gael.poc_map_tracking_and_gallery.Interfaces.IPoliline
 import com.example.gael.poc_map_tracking_and_gallery.MainActivity
 import com.example.gael.poc_map_tracking_and_gallery.R
+import com.example.gael.poc_map_tracking_and_gallery.Utils.MapUtils
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.PendingResult
@@ -20,10 +30,15 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
+import com.google.android.gms.vision.barcode.Barcode
+import com.google.maps.android.PolyUtil
 import kotlinx.android.synthetic.main.fragment_map.view.*
 import com.google.maps.android.ui.IconGenerator
+import kotlinx.android.synthetic.main.fragment_map.*
 import java.text.DateFormat
 import java.util.*
+import kotlinx.android.synthetic.main.layout_dialog_new_destination.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -35,7 +50,9 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
         GoogleMap.OnMapLongClickListener,
         GoogleMap.OnMapClickListener,
         GoogleMap.OnMarkerClickListener,
-        LocationListener{
+        LocationListener,
+        View.OnClickListener,
+        IPoliline {
 
     lateinit var mPresenter : MapContract.Presenter
     lateinit var mMapView : MapView
@@ -50,6 +67,14 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
     var fastInterval : Long = 0
     var myCurrentLocation: Location? = null
     var myLastUpdate : String = ""
+
+    lateinit var destination : Button
+
+    var dialog : Dialog? = null
+
+    var polylineList : ArrayList<LatLng> = ArrayList()
+
+    var markerPosition : Marker? = null
 
     companion object {
         fun newInstance() : MapFragment { return MapFragment()
@@ -79,6 +104,9 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        destination = new_destination
+        destination.isEnabled = false
 
         createLocationRequest()
         mGoogleApiClient = GoogleApiClient.Builder(activity)
@@ -129,6 +157,9 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
             ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION), MainActivity.REQUEST_LOCATION_MAP)
         } else {
             initListeners()
+
+            destination.isEnabled = true
+            destination.setOnClickListener(this)
 
             myGoogleMap.setMyLocationEnabled(true)
             myGoogleMap.uiSettings.setMyLocationButtonEnabled(true)
@@ -214,7 +245,7 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
         // https://developers.google.com/maps/documentation/android/utility/
         // I have used this to display the time as title for location markers
         // you can safely comment the following four lines but for this info
-        var iconFactory : IconGenerator = IconGenerator(activity)
+        /*var iconFactory : IconGenerator = IconGenerator(activity)
         iconFactory.setStyle(IconGenerator.STYLE_PURPLE);
         options.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon(myLastUpdate)))
         options.anchor(iconFactory.anchorU, iconFactory.anchorV)
@@ -224,7 +255,17 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
         var mapMarker : Marker = myGoogleMap.addMarker(options)
         var atTime : Long = myCurrentLocation!!.time
         myLastUpdate = DateFormat.getTimeInstance().format(Date(atTime))
-        mapMarker.setTitle(myLastUpdate)
+        mapMarker.setTitle(myLastUpdate)*/
+
+        var currentLatLng : LatLng = LatLng(myCurrentLocation!!.latitude, myCurrentLocation!!.longitude)
+        var atTime : Long = myCurrentLocation!!.time
+        myLastUpdate = DateFormat.getTimeInstance().format(Date(atTime))
+        if(markerPosition != null)
+        {
+            markerPosition!!.remove()
+        }
+        markerPosition = myGoogleMap.addMarker(MarkerOptions().position(currentLatLng).title(myLastUpdate).snippet(" Time : ".plus(myLastUpdate)))
+
         myGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, valueZoom))
     }
 
@@ -272,5 +313,62 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
         //val resp = MapUtils.getAddressFromLatLng(marker!!.position, activity)
         marker!!.showInfoWindow()
         return true
+    }
+
+    override fun onClick(v: View?) {
+        when(v!!.id) {
+            R.id.new_destination -> {
+                dialog = Dialog(activity)
+                dialog!!.setContentView(R.layout.layout_dialog_new_destination)
+
+                var textViewCurrent : TextView = dialog!!.findViewById(R.id.current)
+                val loc : LatLng = LatLng(myCurrentLocation!!.latitude,myCurrentLocation!!.longitude)
+                textViewCurrent.text = MapUtils.getAddressFromLatLng(loc,activity)
+
+                var btnCancel : Button = dialog!!.findViewById(R.id.annuler)
+                var btnConfrim : Button = dialog!!.findViewById(R.id.confirmer)
+                btnCancel.setOnClickListener(View.OnClickListener { v ->  hideDialog()})
+                btnConfrim.setOnClickListener(View.OnClickListener { v ->
+
+                    var editTextCurrent : TextView = dialog!!.findViewById(R.id.current)
+                    editTextCurrent.setText(MapUtils.getAddressFromLatLng(LatLng(myCurrentLocation!!.latitude,myCurrentLocation!!.longitude),activity))
+                    val edittextDestination : EditText = dialog!!.findViewById(R.id.txt_new_destination)
+                    if(edittextDestination.text != null && !edittextDestination.text.isEmpty()){
+                        val dest : LatLng = MapUtils.getLatLngFromAddress(edittextDestination.text.toString(),activity)
+                        val current : LatLng = LatLng(myCurrentLocation!!.latitude,myCurrentLocation!!.longitude)
+                        MapUtils.getPointsInPoliline(current.latitude,current.longitude,dest.latitude,dest.longitude,this)
+                    }else{
+                        Toast.makeText(activity,R.string.error_new_destination,Toast.LENGTH_SHORT).show()
+                    }
+                    hideDialog()
+
+                })
+
+                dialog!!.show()
+            }
+        }
+    }
+
+    /**
+     * This handler allows to draw polyline on the map
+     */
+    var handlerDraw = Handler()
+    var rnDRaw: Runnable = Runnable {
+        var polylineOPtions : PolylineOptions = PolylineOptions()
+        polylineList.forEach { latLng: LatLng ->
+            polylineOPtions.add(latLng)
+        }
+        myGoogleMap.addPolyline(polylineOPtions.width(5f).color(Color.BLUE))
+    }
+
+    override fun sendPoints(list : ArrayList<LatLng>) {
+        polylineList = list
+        handlerDraw.post(rnDRaw)
+    }
+
+    fun hideDialog() {
+        if(dialog!!.isShowing) {
+            dialog!!.dismiss()
+        }
     }
 }
