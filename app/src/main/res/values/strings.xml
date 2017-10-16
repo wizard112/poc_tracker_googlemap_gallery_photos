@@ -3,6 +3,7 @@
 
     <string name="item_map_bottom_nav">My Map</string>
     <string name="item_gallery_bottom_nav">My Gallery</string>
+    <string name="item_share_bottom_nav">My Share</string>
 
     //configuration
     <string name="VERSION_GOOGLE_MAPS">2</string>
