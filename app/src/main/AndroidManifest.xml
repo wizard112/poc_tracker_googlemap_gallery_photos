@@ -48,6 +48,13 @@
                 android:resource="@xml/paths"/>
 
         </provider>
+
+        <!--
+        <provider android:authorities="com.facebook.app.FacebookContentProvider{2170105069900166}"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
+        -->
+
     </application>
 
 </manifest>

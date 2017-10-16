@@ -32,6 +32,10 @@
                 android:id="@+id/profile_name_facebook"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+            <com.facebook.share.widget.ShareButton
+                android:id="@+id/share_btn_fb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
 

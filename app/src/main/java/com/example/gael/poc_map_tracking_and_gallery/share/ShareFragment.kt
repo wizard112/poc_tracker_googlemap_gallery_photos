@@ -27,6 +27,10 @@ import java.net.URL
 import com.facebook.GraphResponse
 import org.json.JSONObject
 import com.facebook.GraphRequest
+import com.facebook.share.Sharer
+import com.facebook.share.model.ShareLinkContent
+import com.facebook.share.widget.ShareButton
+import com.facebook.share.widget.ShareDialog
 import com.squareup.picasso.Picasso
 
 
@@ -41,6 +45,8 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
     var loginFcb : LoginButton? = null
 
     lateinit var callbackManager : CallbackManager
+
+    lateinit var shareDialog : ShareDialog
 
     override fun setPresenter(presenter: ShareContract.Presenter) {
         mPresenter = presenter
@@ -61,6 +67,8 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
 
         var profileImageFacebook : ImageView = v.findViewById(R.id.profile_image_facebook)
         var profileNameFacebook : TextView = v.findViewById(R.id.profile_name_facebook)
+
+        shareDialog = ShareDialog(this)
 
         loginFcb = v.findViewById(R.id.login_button)
         //define permissions
@@ -91,6 +99,15 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
                     Picasso.with(activity).load(Uri.parse(profileImgUrl)).into(profileImageFacebook)
                     var linear : LinearLayout = v.findViewById(R.id.social_facebook)
                     linear.visibility = View.VISIBLE
+
+
+                    if(ShareDialog.canShow(ShareLinkContent::class.java)){
+                        val linkContent : ShareLinkContent = ShareLinkContent.Builder()
+                                .setContentUrl(Uri.parse(FacebookUtil.SHARE_URL))
+                                .build()
+                        //shareDialog.show(this,linkContent)
+                        ShareDialog.show(activity,linkContent)
+                    }
                 }
                 val parameters = Bundle()
                 parameters.putString(FacebookUtil.FIELDS,FacebookUtil.FIELDS_PROFILE)
@@ -109,6 +126,21 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
                 Log.i("Test","on error ".plus(exception.message))
             }
         })
+
+        shareDialog.registerCallback(callbackManager, object : FacebookCallback<Sharer.Result> {
+            override fun onSuccess(result: Sharer.Result?) {
+
+            }
+
+            override fun onCancel() {
+
+            }
+
+            override fun onError(error: FacebookException?) {
+
+            }
+        })
+
         return v
     }
 
@@ -123,7 +155,17 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-
+        when(v!!.id) {
+            R.id.share_btn_fb -> {
+                Log.i("Test","value is ".plus(ShareDialog.canShow(ShareLinkContent::class.java)))
+                /*if(ShareDialog.canShow(ShareLinkContent::class.java)){
+                    val linkContent : ShareLinkContent = ShareLinkContent.Builder()
+                            .setContentUrl(Uri.parse(FacebookUtil.SHARE_URL))
+                            .build()
+                    shareDialog.show(linkContent)
+                }*/
+            }
+        }
     }
 
 }

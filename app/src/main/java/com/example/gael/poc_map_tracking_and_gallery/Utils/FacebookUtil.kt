@@ -8,6 +8,7 @@ class FacebookUtil {
 
     companion object {
         val IMG_URL : String = "https://graph.facebook.com/"
+        val SHARE_URL : String = "http://developers.facebook.com/android"
         val FIELDS_PROFILE : String = "id,name,email,gender,birthday"
         val FIELDS : String = "fields"
 
