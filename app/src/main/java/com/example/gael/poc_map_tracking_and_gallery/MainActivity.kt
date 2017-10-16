@@ -13,8 +13,18 @@ import com.example.gael.poc_map_tracking_and_gallery.gallery.displaying.TestDisp
 import com.example.gael.poc_map_tracking_and_gallery.map.MapFragment
 import com.example.gael.poc_map_tracking_and_gallery.map.MapPresenter
 import com.example.gael.poc_map_tracking_and_gallery.models.Image
+import com.example.gael.poc_map_tracking_and_gallery.share.ShareFragment
+import com.example.gael.poc_map_tracking_and_gallery.share.SharePresenter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_bottom_view.*
+import com.google.android.gms.internal.d
+import android.provider.SyncStateContract.Helpers.update
+import android.content.pm.PackageInfo
+import android.util.Base64
+import android.util.Log
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, IBottomNavigationActivity {
 
@@ -22,6 +32,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     var presenterMap : MapPresenter? = null
     var presenterGallery : GalleryPresenter? = null
+    var presenterShare : SharePresenter? = null
 
     companion object {
         val REQUEST_LOCATION_MAP = 896
@@ -66,6 +77,15 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
     }
 
+    /**
+     * Create fragment and associated it to presenter : Share
+     */
+    private fun initializePresenterSare(frg : ShareFragment) {
+        if( presenterShare == null && frg != null){
+            presenterShare = SharePresenter(frg)
+        }
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         var fragment : Fragment? = null
 
@@ -84,6 +104,14 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 }else{
                     fragment = MapFragment.newInstance()
                     initializePresenterMap(fragment)
+                }
+            }
+            R.id.item_share -> {
+                if(presenterShare != null){
+                    fragment = presenterShare!!.getView() as ShareFragment
+                }else{
+                    fragment = ShareFragment.newInstance()
+                    initializePresenterSare(fragment)
                 }
             }
         }

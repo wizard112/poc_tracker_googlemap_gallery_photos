@@ -19,6 +19,10 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        mavenCentral()
+        maven {
+            url "https://maven.google.com"
+        }
     }
 }
 
@@ -31,11 +35,12 @@ ext {
     minSdkVersion = 15
     targetSdkVersion = 26
     compileSdkVersion = 26
-    buildToolsVersion = '26.0.2'
+    buildToolsVersion = '25.0.2'
 
-    appcompatVersion = '26'
+    appcompatVersion = '25.0.0'
     constraintLayoutVersion = '1.0.2'
     jUnitVersion = '4.12'
-    designVersion = '26'
-    supportv4Version = '26'
+    designVersion = '25.0.0'
+    supportv4Version = '25.0.0'
+    picassoVersion = '2.5.2'
 }

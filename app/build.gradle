@@ -26,19 +26,25 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile "com.android.support:appcompat-v7:$rootProject.appcompatVersion.+"
+    compile "com.android.support:appcompat-v7:$rootProject.appcompatVersion"
     compile "com.android.support.constraint:constraint-layout:$rootProject.constraintLayoutVersion"
     testCompile "junit:junit:$rootProject.jUnitVersion"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     //bottom navigation view
-    compile "com.android.support:design:$rootProject.designVersion.+"
-    compile "com.android.support:support-v4:$rootProject.supportv4Version.+"
+    compile "com.android.support:design:$rootProject.designVersion"
+    compile "com.android.support:support-v4:$rootProject.supportv4Version"
 
     compile 'com.google.android.gms:play-services-maps:11.0.4'
     compile 'com.google.android.gms:play-services:11.0.4'
 
     //GOOGLE MAP API Util lib
     compile 'com.google.maps.android:android-maps-utils:0.5+'
+
+    //facebook login
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+
+    //picasso
+    compile "com.squareup.picasso:picasso:$rootProject.picassoVersion"
 }
 repositories {
     mavenCentral()

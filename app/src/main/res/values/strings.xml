@@ -3,6 +3,7 @@
 
     <string name="item_map_bottom_nav">My Map</string>
     <string name="item_gallery_bottom_nav">My Gallery</string>
+    <string name="item_share_bottom_nav">My Share</string>
 
     //configuration
     <string name="VERSION_GOOGLE_MAPS">2</string>
@@ -17,4 +18,8 @@
     <string name="txt_annuler">Annuler</string>
 
     <string name="error_new_destination">Remplir la destination</string>
+
+    //facebook
+    <string name="facebook_app_id">2170105069900166</string>
+    <string name="fb_login_protocol_scheme">fb2170105069900166</string>
 </resources>

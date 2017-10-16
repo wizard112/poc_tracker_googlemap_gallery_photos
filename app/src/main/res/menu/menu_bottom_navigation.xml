@@ -8,4 +8,10 @@
         android:id="@+id/item_gallery"
         android:icon="@drawable/ic_collections_24dp"
         android:title="@string/item_gallery_bottom_nav"/>
+
+    <item
+        android:id="@+id/item_share"
+        android:icon="@drawable/ic_share_24dp"
+        android:title="@string/item_share_bottom_nav"
+        />
 </menu>
