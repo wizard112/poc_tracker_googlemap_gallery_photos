@@ -78,7 +78,7 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
                 val request = GraphRequest.newMeRequest(
                         loginResult.accessToken
                 ) { `object`, response ->
-                    
+
                     // Application code
                     val email = `object`.getString("email")
                     val birthday = `object`.getString("birthday") // 01/31/1980 format

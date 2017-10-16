@@ -35,6 +35,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/API_KEY_GOOGLE_MAPS_V2" />
 
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:grantUriPermissions="true"

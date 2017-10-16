@@ -18,4 +18,8 @@
     <string name="txt_annuler">Annuler</string>
 
     <string name="error_new_destination">Remplir la destination</string>
+
+    //facebook
+    <string name="facebook_app_id">2170105069900166</string>
+    <string name="fb_login_protocol_scheme">fb2170105069900166</string>
 </resources>
