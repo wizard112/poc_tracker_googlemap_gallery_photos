@@ -31,7 +31,10 @@ import com.facebook.share.Sharer
 import com.facebook.share.model.ShareLinkContent
 import com.facebook.share.widget.ShareButton
 import com.facebook.share.widget.ShareDialog
+import com.google.firebase.database.Transaction.success
 import com.squareup.picasso.Picasso
+import com.twitter.sdk.android.core.*
+import com.twitter.sdk.android.core.identity.TwitterLoginButton
 
 
 /**
@@ -47,6 +50,8 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
     lateinit var callbackManager : CallbackManager
 
     lateinit var shareDialog : ShareDialog
+
+    lateinit var loginButtonTwitter : TwitterLoginButton
 
     override fun setPresenter(presenter: ShareContract.Presenter) {
         mPresenter = presenter
@@ -65,6 +70,13 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var v : View = inflater!!.inflate(R.layout.fragment_share,container,false)
 
+        manageTwitter(v)
+        manageFacebook(v)
+
+        return v
+    }
+
+    private fun manageFacebook(v : View){
         var profileImageFacebook : ImageView = v.findViewById(R.id.profile_image_facebook)
         var profileNameFacebook : TextView = v.findViewById(R.id.profile_name_facebook)
 
@@ -140,9 +152,24 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
 
             }
         })
-
-        return v
     }
+
+    private fun manageTwitter(v : View) {
+        loginButtonTwitter = v.findViewById(R.id.login_button_twitter)
+        loginButtonTwitter.callback = object : Callback<TwitterSession> (){
+            override fun success(result: Result<TwitterSession>?) {
+                Log.i("Test",result.toString())
+                var session : TwitterSession = TwitterCore.getInstance().sessionManager.activeSession
+                var authToken : TwitterAuthToken = session.authToken
+                var secret : String = authToken.secret
+            }
+
+            override fun failure(exception: TwitterException?) {
+                Log.i("Test",exception!!.message)
+            }
+        }
+    }
+
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -152,18 +179,14 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         callbackManager.onActivityResult(requestCode, resultCode, data)
+        //twitter
+        loginButtonTwitter.onActivityResult(requestCode,resultCode, data)
     }
 
     override fun onClick(v: View?) {
         when(v!!.id) {
             R.id.share_btn_fb -> {
                 Log.i("Test","value is ".plus(ShareDialog.canShow(ShareLinkContent::class.java)))
-                /*if(ShareDialog.canShow(ShareLinkContent::class.java)){
-                    val linkContent : ShareLinkContent = ShareLinkContent.Builder()
-                            .setContentUrl(Uri.parse(FacebookUtil.SHARE_URL))
-                            .build()
-                    shareDialog.show(linkContent)
-                }*/
             }
         }
     }
