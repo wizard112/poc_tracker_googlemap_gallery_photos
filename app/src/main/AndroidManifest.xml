@@ -15,7 +15,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name=".Utils.ProjectApplication">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,6 +54,14 @@
         <provider android:authorities="com.facebook.app.FacebookContentProvider{2170105069900166}"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true"/>
+        -->
+
+        <!-- Twitter -->
+        <!--
+        <resources>
+            <string android:name="com.twitter.sdk.android.CONSUMER_KEY">5aUkACYdZezxal9bqKBuYBGBu</string>
+            <string android:name="com.twitter.sdk.android.CONSUMER_SECRET"> 3JchgpkzxxdfTSG0w0AMSYniBzDj6WNBmDbRdZpgBz1zMuC7h2</string>
+        </resources>
         -->
 
     </application>
