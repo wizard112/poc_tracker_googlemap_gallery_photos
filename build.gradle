@@ -41,5 +41,6 @@ ext {
     constraintLayoutVersion = '1.0.2'
     jUnitVersion = '4.12'
     designVersion = '25.0.0'
-    supportv4Version = '26.0.2'
+    supportv4Version = '25.0.0'
+    picassoVersion = '2.5.2'
 }
