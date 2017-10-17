@@ -12,12 +12,33 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true //important
     }
+
+
+    signingConfigs {
+        dev {
+            storeFile file("../poc_keystore.keystore")
+            storePassword "poc1234"
+            keyAlias "poc_keystore"
+            keyPassword "password"
+        }
+    }
+
+    productFlavors {
+        dev {
+            signingConfig signingConfigs.dev
+            versionNameSuffix ".dev"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
     }
 }
 
@@ -53,6 +74,10 @@ dependencies {
     compile "com.twitter.sdk.android:tweet-ui:$rootProject.twitterVersion"
     compile "com.twitter.sdk.android:tweet-composer:$rootProject.twitterVersion"
     compile "com.twitter.sdk.android:twitter-mopub:$rootProject.twitterVersion"
+
+    //auth
+    compile 'com.google.android.gms:play-services-auth:11.0.4'
+
 }
 repositories {
     mavenCentral()
