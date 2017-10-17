@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import com.example.gael.poc_map_tracking_and_gallery.R
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -18,10 +17,14 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.support.v4.app.ActivityCompat
+import android.support.v7.app.AppCompatActivity
+import android.telephony.SmsManager
+import android.widget.*
+import com.example.gael.poc_map_tracking_and_gallery.MainActivity
+import com.example.gael.poc_map_tracking_and_gallery.Manifest
 import com.example.gael.poc_map_tracking_and_gallery.Utils.FacebookUtil
+import com.example.gael.poc_map_tracking_and_gallery.Utils.Utils
 import com.facebook.Profile
 import java.net.URL
 import com.facebook.GraphResponse
@@ -31,7 +34,11 @@ import com.facebook.share.Sharer
 import com.facebook.share.model.ShareLinkContent
 import com.facebook.share.widget.ShareButton
 import com.facebook.share.widget.ShareDialog
+import com.google.firebase.database.Transaction.success
 import com.squareup.picasso.Picasso
+import com.twitter.sdk.android.core.*
+import com.twitter.sdk.android.core.identity.TwitterLoginButton
+import com.twitter.sdk.android.tweetcomposer.TweetComposer
 
 
 /**
@@ -47,6 +54,10 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
     lateinit var callbackManager : CallbackManager
 
     lateinit var shareDialog : ShareDialog
+
+    lateinit var loginButtonTwitter : TwitterLoginButton
+
+    lateinit var btnSendSMS : Button
 
     override fun setPresenter(presenter: ShareContract.Presenter) {
         mPresenter = presenter
@@ -65,6 +76,13 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var v : View = inflater!!.inflate(R.layout.fragment_share,container,false)
 
+        manageTwitter(v)
+        manageFacebook(v)
+
+        return v
+    }
+
+    private fun manageFacebook(v : View){
         var profileImageFacebook : ImageView = v.findViewById(R.id.profile_image_facebook)
         var profileNameFacebook : TextView = v.findViewById(R.id.profile_name_facebook)
 
@@ -133,20 +151,46 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
             }
 
             override fun onCancel() {
-
+                Log.i("Test","in oncancel")
             }
 
             override fun onError(error: FacebookException?) {
-
+                Log.i("Test","error ".plus(error!!.message))
             }
         })
-
-        return v
     }
+
+    private fun manageTwitter(v : View) {
+        loginButtonTwitter = v.findViewById(R.id.login_button_twitter)
+        loginButtonTwitter.callback = object : Callback<TwitterSession> (){
+            override fun success(result: Result<TwitterSession>?) {
+                Log.i("Test",result.toString())
+                var session : TwitterSession = TwitterCore.getInstance().sessionManager.activeSession
+                var authToken : TwitterAuthToken = session.authToken
+                var secret : String = authToken.secret
+
+                /*Log.i("Test","in onsuccess")
+                var builder : TweetComposer.Builder = TweetComposer.Builder(activity)
+                        .text("Test my post from app !!!")
+                builder.show()*/
+            }
+
+            override fun failure(exception: TwitterException?) {
+                Log.i("Test",exception!!.message)
+            }
+        }
+    }
+
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        manageBtnSendSMS()
+    }
+
+    private fun manageBtnSendSMS() {
+        btnSendSMS = btn_send_message
+        btnSendSMS.setOnClickListener(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -158,13 +202,29 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
         when(v!!.id) {
             R.id.share_btn_fb -> {
                 Log.i("Test","value is ".plus(ShareDialog.canShow(ShareLinkContent::class.java)))
-                /*if(ShareDialog.canShow(ShareLinkContent::class.java)){
-                    val linkContent : ShareLinkContent = ShareLinkContent.Builder()
-                            .setContentUrl(Uri.parse(FacebookUtil.SHARE_URL))
-                            .build()
-                    shareDialog.show(linkContent)
-                }*/
             }
+            R.id.btn_send_message -> {
+                var arr : ArrayList<String> = Utils.checkPermissions(arrayOf(android.Manifest.permission.SEND_SMS),activity)
+                if(arr != null && arr.size > 0){
+                    ActivityCompat.requestPermissions(activity,arr.toTypedArray(),MainActivity.REQUEST_PERMISSION_SMS_SEND)
+                }else{
+                    sendSMS()
+                }
+            }
+        }
+    }
+
+    override fun sendSMS() {
+        try{
+            val phoneNumber : String = "0497352844"
+            val msg : String = "Ne fais pas attention au sms c'est u test d'envoie automatique.SORRY !!"
+
+            var smsManager : SmsManager = SmsManager.getDefault()
+            smsManager.sendTextMessage(phoneNumber,null,msg,null,null)
+            Toast.makeText(activity,getString(R.string.message_sent).plus(" ").plus(phoneNumber),Toast.LENGTH_SHORT).show()
+        }catch (e : Exception) {
+            e.printStackTrace()
+            Log.e("E",e.message)
         }
     }
 
