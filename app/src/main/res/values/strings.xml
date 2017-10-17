@@ -22,4 +22,7 @@
     //facebook
     <string name="facebook_app_id">2170105069900166</string>
     <string name="fb_login_protocol_scheme">fb2170105069900166</string>
+
+    <string name="txt_btn_send_message">Send message</string>
+    <string name="message_sent">Message sent to </string>
 </resources>
