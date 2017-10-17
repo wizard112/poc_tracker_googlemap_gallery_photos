@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         val REQUEST_LOCATION_LOCATION = 897
         val REQUEST_PERMISSION_EXTERNAL_STORAGE = 898
         val REQUEST_PERMISSION_SMS_SEND = 899
+        val CODE_SIGNIN_GOOGLE = 900
 
         val TAG_FRG_PREVIEW = "tag_frg_preview"
     }
