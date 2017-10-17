@@ -1,5 +1,6 @@
 package com.example.gael.poc_map_tracking_and_gallery
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -38,6 +39,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         val REQUEST_LOCATION_MAP = 896
         val REQUEST_LOCATION_LOCATION = 897
         val REQUEST_PERMISSION_EXTERNAL_STORAGE = 898
+        val REQUEST_PERMISSION_SMS_SEND = 899
 
         val TAG_FRG_PREVIEW = "tag_frg_preview"
     }
@@ -136,6 +138,11 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                     presenterGallery!!.getImages()
                 }
             }
+            REQUEST_PERMISSION_SMS_SEND-> if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if(presenterShare != null){
+                    presenterShare!!.sendSMS()
+                }
+            }
         }
     }
 
@@ -148,5 +155,14 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             supportFragmentManager.beginTransaction().add(R.id.container,f, TAG_FRG_PREVIEW).commit()
         }
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        var frg : Fragment = supportFragmentManager.findFragmentById(R.id.container)
+        if(frg != null && frg is ShareFragment){
+            frg.onActivityResult(requestCode, resultCode, data)
+        }
     }
 }
