@@ -77,7 +77,13 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
     var markerPosition : Marker? = null
 
     companion object {
+        var myGoogleApiClient : GoogleApiClient? = null
+
         fun newInstance() : MapFragment { return MapFragment()
+        }
+
+        fun getGoogleAPiClient() : GoogleApiClient {
+            return myGoogleApiClient!!
         }
     }
 
@@ -209,6 +215,7 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
     override fun onStart() {
         super.onStart()
         mGoogleApiClient.connect()
+        myGoogleApiClient = mGoogleApiClient
     }
 
     /**
@@ -218,6 +225,7 @@ class MapFragment : Fragment(), MapContract.View, GoogleApiClient.ConnectionCall
         super.onStop()
         if( mGoogleApiClient != null && mGoogleApiClient.isConnected ) {
             mGoogleApiClient.disconnect()
+            myGoogleApiClient = mGoogleApiClient
         }
     }
 

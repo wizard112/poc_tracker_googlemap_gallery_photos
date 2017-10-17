@@ -25,6 +25,7 @@ import com.example.gael.poc_map_tracking_and_gallery.MainActivity
 import com.example.gael.poc_map_tracking_and_gallery.Manifest
 import com.example.gael.poc_map_tracking_and_gallery.Utils.FacebookUtil
 import com.example.gael.poc_map_tracking_and_gallery.Utils.Utils
+import com.example.gael.poc_map_tracking_and_gallery.map.MapFragment
 import com.facebook.Profile
 import java.net.URL
 import com.facebook.GraphResponse
@@ -34,6 +35,13 @@ import com.facebook.share.Sharer
 import com.facebook.share.model.ShareLinkContent
 import com.facebook.share.widget.ShareButton
 import com.facebook.share.widget.ShareDialog
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInResult
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.SignInButton
+import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.database.Transaction.success
 import com.squareup.picasso.Picasso
 import com.twitter.sdk.android.core.*
@@ -45,7 +53,8 @@ import com.twitter.sdk.android.tweetcomposer.TweetComposer
  * Created on 16.10.17.
  */
 
-class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
+class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener,
+ GoogleApiClient.OnConnectionFailedListener{
 
     lateinit var mPresenter : ShareContract.Presenter
 
@@ -59,6 +68,10 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
 
     lateinit var btnSendSMS : Button
 
+    lateinit var mGoogleApiClient : GoogleApiClient
+
+    var signINGoogle : SignInButton? = null
+
     override fun setPresenter(presenter: ShareContract.Presenter) {
         mPresenter = presenter
     }
@@ -71,6 +84,19 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        var gso : GoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestEmail()
+        .build()
+
+        mGoogleApiClient = GoogleApiClient.Builder(activity)
+        .enableAutoManage(activity, this)
+        .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+        .build()
+    }
+
+    override fun onConnectionFailed(p0: ConnectionResult) {
+        Log.i("Test","failed : ".plus(p0.errorMessage))
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -186,6 +212,7 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         manageBtnSendSMS()
+        manageGoogle()
     }
 
     private fun manageBtnSendSMS() {
@@ -193,9 +220,19 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
         btnSendSMS.setOnClickListener(this)
     }
 
+    private fun manageGoogle() {
+        signINGoogle = sign_in_button
+        signINGoogle!!.setOnClickListener(this)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         callbackManager.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == MainActivity.CODE_SIGNIN_GOOGLE){
+            val result : GoogleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
+            mPresenter.sendResultSignin(result)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -211,7 +248,15 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
                     sendSMS()
                 }
             }
+            R.id.sign_in_button -> {
+                signin()
+            }
         }
+    }
+
+    private fun signin() {
+        var signinIntent : Intent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient)
+        startActivityForResult(signinIntent,MainActivity.CODE_SIGNIN_GOOGLE)
     }
 
     override fun sendSMS() {
@@ -225,6 +270,14 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
         }catch (e : Exception) {
             e.printStackTrace()
             Log.e("E",e.message)
+        }
+    }
+
+    override fun resultSignin(result: GoogleSignInResult) {
+        Log.i("Test","result is ".plus(result.isSuccess))
+        if(result.isSuccess){
+            var accou : GoogleSignInAccount = result.signInAccount!!
+            Log.i("Test","result : ".plus(accou.displayName))
         }
     }
 

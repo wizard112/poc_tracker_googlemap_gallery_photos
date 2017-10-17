@@ -1,5 +1,8 @@
 package com.example.gael.poc_map_tracking_and_gallery.share
 
+import android.util.Log
+import com.google.android.gms.auth.api.signin.GoogleSignInResult
+
 /**
  * Created on 16.10.17.
  */
@@ -22,6 +25,13 @@ class SharePresenter (view : ShareContract.View): ShareContract.Presenter {
     override fun sendSMS() {
         if(isViewNotNull()) {
             mView.sendSMS()
+        }
+    }
+
+    override fun sendResultSignin(result: GoogleSignInResult) {
+        if(isViewNotNull()) {
+            mView.resultSignin(result)
+            Log.i("Test","in presenter for view ")
         }
     }
 
