@@ -19,4 +19,10 @@ class SharePresenter (view : ShareContract.View): ShareContract.Presenter {
         return mView
     }
 
+    override fun sendSMS() {
+        if(isViewNotNull()) {
+            mView.sendSMS()
+        }
+    }
+
 }

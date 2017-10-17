@@ -9,9 +9,12 @@ import com.example.gael.poc_map_tracking_and_gallery.BaseView
 
 interface ShareContract {
 
-    interface View : BaseView<Presenter> {}
+    interface View : BaseView<Presenter> {
+        fun sendSMS()
+    }
 
     interface Presenter : BasePresenter {
         fun getView() : View
+        fun sendSMS()
     }
 }

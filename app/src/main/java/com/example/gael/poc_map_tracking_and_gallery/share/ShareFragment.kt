@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import com.example.gael.poc_map_tracking_and_gallery.R
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -18,10 +17,14 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.support.v4.app.ActivityCompat
+import android.support.v7.app.AppCompatActivity
+import android.telephony.SmsManager
+import android.widget.*
+import com.example.gael.poc_map_tracking_and_gallery.MainActivity
+import com.example.gael.poc_map_tracking_and_gallery.Manifest
 import com.example.gael.poc_map_tracking_and_gallery.Utils.FacebookUtil
+import com.example.gael.poc_map_tracking_and_gallery.Utils.Utils
 import com.facebook.Profile
 import java.net.URL
 import com.facebook.GraphResponse
@@ -35,6 +38,7 @@ import com.google.firebase.database.Transaction.success
 import com.squareup.picasso.Picasso
 import com.twitter.sdk.android.core.*
 import com.twitter.sdk.android.core.identity.TwitterLoginButton
+import com.twitter.sdk.android.tweetcomposer.TweetComposer
 
 
 /**
@@ -52,6 +56,8 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
     lateinit var shareDialog : ShareDialog
 
     lateinit var loginButtonTwitter : TwitterLoginButton
+
+    lateinit var btnSendSMS : Button
 
     override fun setPresenter(presenter: ShareContract.Presenter) {
         mPresenter = presenter
@@ -145,11 +151,11 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
             }
 
             override fun onCancel() {
-
+                Log.i("Test","in oncancel")
             }
 
             override fun onError(error: FacebookException?) {
-
+                Log.i("Test","error ".plus(error!!.message))
             }
         })
     }
@@ -162,6 +168,11 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
                 var session : TwitterSession = TwitterCore.getInstance().sessionManager.activeSession
                 var authToken : TwitterAuthToken = session.authToken
                 var secret : String = authToken.secret
+
+                /*Log.i("Test","in onsuccess")
+                var builder : TweetComposer.Builder = TweetComposer.Builder(activity)
+                        .text("Test my post from app !!!")
+                builder.show()*/
             }
 
             override fun failure(exception: TwitterException?) {
@@ -174,13 +185,17 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        manageBtnSendSMS()
+    }
+
+    private fun manageBtnSendSMS() {
+        btnSendSMS = btn_send_message
+        btnSendSMS.setOnClickListener(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         callbackManager.onActivityResult(requestCode, resultCode, data)
-        //twitter
-        loginButtonTwitter.onActivityResult(requestCode,resultCode, data)
     }
 
     override fun onClick(v: View?) {
@@ -188,6 +203,28 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener {
             R.id.share_btn_fb -> {
                 Log.i("Test","value is ".plus(ShareDialog.canShow(ShareLinkContent::class.java)))
             }
+            R.id.btn_send_message -> {
+                var arr : ArrayList<String> = Utils.checkPermissions(arrayOf(android.Manifest.permission.SEND_SMS),activity)
+                if(arr != null && arr.size > 0){
+                    ActivityCompat.requestPermissions(activity,arr.toTypedArray(),MainActivity.REQUEST_PERMISSION_SMS_SEND)
+                }else{
+                    sendSMS()
+                }
+            }
+        }
+    }
+
+    override fun sendSMS() {
+        try{
+            val phoneNumber : String = "0497352844"
+            val msg : String = "Ne fais pas attention au sms c'est u test d'envoie automatique.SORRY !!"
+
+            var smsManager : SmsManager = SmsManager.getDefault()
+            smsManager.sendTextMessage(phoneNumber,null,msg,null,null)
+            Toast.makeText(activity,getString(R.string.message_sent).plus(" ").plus(phoneNumber),Toast.LENGTH_SHORT).show()
+        }catch (e : Exception) {
+            e.printStackTrace()
+            Log.e("E",e.message)
         }
     }
 
