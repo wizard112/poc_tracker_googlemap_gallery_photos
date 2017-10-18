@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_value_one">5dp</dimen>
+    <dimen name="default_value_two">10dp</dimen>
+    <dimen name="image_view_heigt">200dp</dimen>
+    <dimen name="cell_recycler_view_right">10dp</dimen>
+
+    <dimen name="margin_left_cell_adapter">-40dp</dimen>
+</resources>

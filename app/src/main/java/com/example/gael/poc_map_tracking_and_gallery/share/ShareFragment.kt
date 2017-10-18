@@ -72,6 +72,8 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener,
 
     var signINGoogle : SignInButton? = null
 
+    var connTwitter : Boolean = false
+
     override fun setPresenter(presenter: ShareContract.Presenter) {
         mPresenter = presenter
     }
@@ -188,6 +190,7 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener,
 
     private fun manageTwitter(v : View) {
         loginButtonTwitter = v.findViewById(R.id.login_button_twitter)
+        loginButtonTwitter.setOnClickListener(this)
         loginButtonTwitter.callback = object : Callback<TwitterSession> (){
             override fun success(result: Result<TwitterSession>?) {
                 Log.i("Test",result.toString())
@@ -228,10 +231,17 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         callbackManager.onActivityResult(requestCode, resultCode, data)
+        loginButtonTwitter.onActivityResult(requestCode, resultCode, data)
 
         if(requestCode == MainActivity.CODE_SIGNIN_GOOGLE){
             val result : GoogleSignInResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
             mPresenter.sendResultSignin(result)
+        }
+        if(connTwitter) {
+            social_twitter.visibility = View.VISIBLE
+            var builder : TweetComposer.Builder = TweetComposer.Builder(activity)
+                    .text("Test my post from app !!!")
+            builder.show()
         }
     }
 
@@ -250,6 +260,10 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener,
             }
             R.id.sign_in_button -> {
                 signin()
+            }
+
+            R.id.login_button_twitter -> {
+                connTwitter = true
             }
         }
     }
@@ -279,6 +293,12 @@ class ShareFragment : Fragment(), ShareContract.View, View.OnClickListener,
             var accou : GoogleSignInAccount = result.signInAccount!!
             Log.i("Test","result : ".plus(accou.displayName))
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mGoogleApiClient.stopAutoManage(activity)
+        mGoogleApiClient.disconnect()
     }
 
 }

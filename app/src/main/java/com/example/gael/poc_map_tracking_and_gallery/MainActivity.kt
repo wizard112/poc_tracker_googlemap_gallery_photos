@@ -161,6 +161,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        Log.i("Test","value is ".plus(requestCode).plus(" - ").plus(resultCode))
         var frg : Fragment = supportFragmentManager.findFragmentById(R.id.container)
         if(frg != null && frg is ShareFragment){
             frg.onActivityResult(requestCode, resultCode, data)
