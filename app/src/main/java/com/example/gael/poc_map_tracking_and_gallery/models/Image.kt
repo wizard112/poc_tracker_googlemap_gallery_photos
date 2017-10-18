@@ -14,11 +14,13 @@ class Image() : Parcelable{
     var uriImage : String? = null
     var type : String? = null
     var idIMage : Int? = null
+    var checked : Boolean = false
 
     constructor(parcel: Parcel) : this() {
         uriImage = parcel.readString()
         type = parcel.readString()
         idIMage = parcel.readValue(Int::class.java.classLoader) as? Int
+        checked = parcel.readValue(Boolean::class.java.classLoader) as Boolean
     }
 
     constructor(theUri : String, theType : String, theIdImage : Int) : this() {
@@ -35,6 +37,7 @@ class Image() : Parcelable{
         parcel.writeString(uriImage)
         parcel.writeString(type)
         parcel.writeValue(idIMage)
+        parcel.writeValue(checked)
     }
 
     override fun describeContents(): Int {
